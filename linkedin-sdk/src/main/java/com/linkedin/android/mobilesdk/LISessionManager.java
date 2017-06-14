@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -76,6 +77,26 @@ public class LISessionManager {
     session.setAccessToken(accessToken);
   }
 
+  private Intent prepare(Activity activity, Scope scope, AuthListener callback, boolean
+      showGoToAppStoreDialog) {
+    Intent intent = null;
+    // Check if Linkedin app is installed
+    if (LIAppVersion.isLIAppCurrent(ctx)) {
+      Log.d(TAG, "Linkedin app installed");
+      authListener = callback;
+      intent = new Intent();
+      intent.setClassName(LI_APP_PACKAGE_NAME, LI_APP_AUTH_CLASS_NAME);
+      intent.putExtra(SCOPE_DATA, scope.createScope());
+      intent.setAction(LI_APP_ACTION_AUTHORIZE_APP);
+      intent.addCategory(LI_APP_CATEGORY);
+    } else {
+      Log.d(TAG, "Linkedin app not installed");
+      AppStore.goAppStore(activity, showGoToAppStoreDialog);
+    }
+
+    return intent;
+  }
+
   /**
    * Brings the user to an authorization screen which allows the user to authorize
    * the application to access their LinkedIn data.  When the user authorizes the application
@@ -99,23 +120,46 @@ public class LISessionManager {
    *                               taken directly to the app store.
    */
   public void init(Activity activity, Scope scope, AuthListener callback, boolean showGoToAppStoreDialog) {
-    // Check if Linkedin app is installed
-    if (LIAppVersion.isLIAppCurrent(ctx)) {
-      Log.d(TAG, "Linkedin app installed");
-      authListener = callback;
-      Intent intent = new Intent();
-      intent.setClassName(LI_APP_PACKAGE_NAME, LI_APP_AUTH_CLASS_NAME);
-      intent.putExtra(SCOPE_DATA, scope.createScope());
-      intent.setAction(LI_APP_ACTION_AUTHORIZE_APP);
-      intent.addCategory(LI_APP_CATEGORY);
+    Intent intent = prepare(activity, scope, callback, showGoToAppStoreDialog);
+    if (intent != null) {
       try {
         activity.startActivityForResult(intent, LI_SDK_AUTH_REQUEST_CODE);
       } catch (ActivityNotFoundException exception) {
         Log.d(TAG, exception.getMessage(), exception);
       }
-    } else {
-      Log.d(TAG, "Linkedin app not installed");
-      AppStore.goAppStore(activity, showGoToAppStoreDialog);
+    }
+  }
+
+  /**
+   * Brings the user to an authorization screen which allows the user to authorize
+   * the application to access their LinkedIn data.  When the user authorizes the application
+   * {@link AuthListener#onAuthSuccess()} is called.
+   * If the user has previously authorized the application, onAuthSuccess will be called without
+   * the authorization screen being shown.
+   * <p>
+   * If there is no user logged into the LinkedIn application, the user will be prompted to login
+   * to LinkedIn, after which the authorization screen will be shown.
+   * <p>
+   * Either this method or {@link LISessionManager#init(AccessToken)} must be
+   * called before the application can make API calls or DeepLink calls.
+   *
+   * @param fragment               fragment to return to after initialization
+   * @param scope                  The type of LinkedIn data that for which access is requested.
+   *                               see {@link Scope}
+   * @param callback               listener to execute on completion
+   * @param showGoToAppStoreDialog determines behaviour when the LinkedIn app is not installed
+   *                               if true, a dialog is shown which prompts the user to install
+   *                               the LinkedIn app via the app store.  If false, the user is
+   *                               taken directly to the app store.
+   */
+  public void init(Fragment fragment, Scope scope, AuthListener callback, boolean showGoToAppStoreDialog) {
+    Intent intent = prepare(fragment.getActivity(), scope, callback, showGoToAppStoreDialog);
+    if (intent != null) {
+      try {
+        fragment.startActivityForResult(intent, LI_SDK_AUTH_REQUEST_CODE);
+      } catch (ActivityNotFoundException exception) {
+        Log.d(TAG, exception.getMessage(), exception);
+      }
     }
   }
 
