@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.linkedin.android.mobilesdk.errors.LIAppErrorCode;
-import com.linkedin.android.mobilesdk.errors.LIDeepLinkError;
+import com.linkedin.android.mobilesdk.errors.LiCommonError;
 import com.linkedin.android.mobilesdk.internals.AppStore;
 import com.linkedin.android.mobilesdk.internals.LIAppVersion;
 import com.linkedin.android.mobilesdk.listeners.DeepLinkListener;
@@ -54,7 +54,8 @@ public class DeepLinkHelper {
 
     LISession session = LISessionManager.getInstance(activity.getApplicationContext()).getSession();
     if (!session.isValid()) {
-      callback.onDeepLinkError(new LIDeepLinkError(LIAppErrorCode.NOT_AUTHENTICATED, "there is no access token"));
+      callback.onDeepLinkError(new LiCommonError(LIAppErrorCode.NOT_AUTHENTICATED,
+          "there is no access token"));
       return;
     }
     try {
@@ -64,8 +65,8 @@ public class DeepLinkHelper {
       }
       deepLinkToProfile(activity, memberId, session.getAccessToken());
     } catch (ActivityNotFoundException e) {
-      callback.onDeepLinkError(new LIDeepLinkError(LIAppErrorCode.LINKEDIN_APP_NOT_FOUND,
-          "LinkedIn app needs to be either installed or` updated"));
+      callback.onDeepLinkError(new LiCommonError(LIAppErrorCode.LINKEDIN_APP_NOT_FOUND,
+          "LinkedIn app needs to be either installed or updated"));
       deepLinkListener = null;
     }
   }
@@ -86,25 +87,24 @@ public class DeepLinkHelper {
   }
 
   /**
-   * call this method in your activity's onActivityResult method.
+   * Call this method in your activity's onActivityResult method.
    * Handles any response code from LinkedIn and calls the DeepLinkListener callback
    *
-   * @param activity
    * @param requestCode
    * @param resultCode
    * @param data
    */
-  public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == LI_SDK_CROSSLINK_REQUEST_CODE && deepLinkListener != null) {
       if (resultCode == Activity.RESULT_OK) {
         deepLinkListener.onDeepLinkSuccess();
       } else if (resultCode == Activity.RESULT_CANCELED) {
         if (data == null || data.getExtras() == null) {
-          deepLinkListener.onDeepLinkError(new LIDeepLinkError(LIAppErrorCode.USER_CANCELLED, ""));
+          deepLinkListener.onDeepLinkError(new LiCommonError(LIAppErrorCode.USER_CANCELLED, ""));
         } else {
           String errorMessage = data.getExtras().getString(DEEPLINK_ERROR_MESSAGE_EXTRA_NAME);
           String errorCode = data.getExtras().getString(DEEPLINK_ERROR_CODE_EXTRA_NAME);
-          deepLinkListener.onDeepLinkError(new LIDeepLinkError(errorCode, errorMessage));
+          deepLinkListener.onDeepLinkError(new LiCommonError(errorCode, errorMessage));
         }
       }
     }

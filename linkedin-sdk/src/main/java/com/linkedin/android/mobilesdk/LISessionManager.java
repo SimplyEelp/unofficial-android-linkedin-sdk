@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.linkedin.android.mobilesdk.errors.LIAppErrorCode;
-import com.linkedin.android.mobilesdk.errors.LIAuthError;
+import com.linkedin.android.mobilesdk.errors.LiCommonError;
 import com.linkedin.android.mobilesdk.internals.AppStore;
 import com.linkedin.android.mobilesdk.internals.LIAppVersion;
 import com.linkedin.android.mobilesdk.listeners.AuthListener;
@@ -184,11 +184,11 @@ public class LISessionManager {
         // call the callback with the
         authListener.onAuthSuccess();
       } else if (resultCode == Activity.RESULT_CANCELED) {
-        authListener.onAuthError(new LIAuthError(LIAppErrorCode.USER_CANCELLED, "user canceled"));
+        authListener.onAuthError(new LiCommonError(LIAppErrorCode.USER_CANCELLED, "user canceled"));
       } else {
         String errorInfo = data.getStringExtra(LI_ERROR_INFO);
         String errorDesc = data.getStringExtra(LI_ERROR_DESCRIPTION);
-        authListener.onAuthError(new LIAuthError(errorInfo, errorDesc));
+        authListener.onAuthError(new LiCommonError(errorInfo, errorDesc));
       }
       authListener = null;
     }

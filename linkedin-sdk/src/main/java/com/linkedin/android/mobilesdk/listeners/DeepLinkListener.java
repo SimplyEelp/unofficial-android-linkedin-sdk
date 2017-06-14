@@ -15,11 +15,11 @@
 */
 package com.linkedin.android.mobilesdk.listeners;
 
-import com.linkedin.android.mobilesdk.errors.LIDeepLinkError;
+import com.linkedin.android.mobilesdk.errors.LiCommonError;
 
 public interface DeepLinkListener {
 
   void onDeepLinkSuccess();
 
-  void onDeepLinkError(LIDeepLinkError error);
+  void onDeepLinkError(LiCommonError error);
 }

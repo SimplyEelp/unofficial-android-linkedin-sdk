@@ -17,7 +17,7 @@ package com.linkedin.android.mobilesdk.listeners;
 
 import com.linkedin.android.mobilesdk.APIHelper;
 import com.linkedin.android.mobilesdk.DeepLinkHelper;
-import com.linkedin.android.mobilesdk.errors.LIAuthError;
+import com.linkedin.android.mobilesdk.errors.LiCommonError;
 
 public interface AuthListener {
 
@@ -34,5 +34,5 @@ public interface AuthListener {
    *
    * @param error information on why the authorization did not occur
    */
-  void onAuthError(LIAuthError error);
+  void onAuthError(LiCommonError error);
 }
