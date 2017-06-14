@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'com.github.chusobadenas'
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion "25.0.3"
+
+  defaultConfig {
+    minSdkVersion 19
+    targetSdkVersion 25
+    versionCode 1
+    versionName "1.1.4"
+    consumerProguardFiles 'proguard-project.txt'
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+}
+
+dependencies {
+  final SUPPORT_LIBRARY_VERSION = '25.3.1'
+  final VOLLEY_VERSION = '1.0.0'
+
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+
+  compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+  compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+  compile "com.android.volley:volley:$VOLLEY_VERSION"
+}
