@@ -22,7 +22,7 @@ public class LIAppVersion {
       PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
       result = packageInfo.versionCode >= BuildConfig.LI_APP_SUPPORTED_VER_CODE;
     } catch (PackageManager.NameNotFoundException exception) {
-      Log.e(TAG, exception.getMessage(), exception);
+      Log.d(TAG, exception.getMessage(), exception);
     }
     return result;
   }
