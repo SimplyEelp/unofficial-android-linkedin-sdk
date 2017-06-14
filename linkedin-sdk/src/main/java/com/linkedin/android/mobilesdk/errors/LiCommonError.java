@@ -15,39 +15,47 @@
 */
 package com.linkedin.android.mobilesdk.errors;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LIDeepLinkError {
-
-  private static final String TAG = LIDeepLinkError.class.getName();
+public class LiCommonError {
 
   private final LIAppErrorCode errorCode;
   private final String errorMsg;
 
-  public LIDeepLinkError(@NonNull String errorInfo, String errorMsg) {
-    this.errorCode = LIAppErrorCode.findErrorCode(errorInfo);
-    this.errorMsg = errorMsg;
-  }
-
-  public LIDeepLinkError(LIAppErrorCode errorCode, String errorMsg) {
+  public LiCommonError(LIAppErrorCode errorCode, String errorMsg) {
     this.errorCode = errorCode;
     this.errorMsg = errorMsg;
   }
 
+  public LiCommonError(String errorInfo, String errorMsg) {
+    this.errorCode = LIAppErrorCode.findErrorCode(errorInfo);
+    this.errorMsg = errorMsg;
+  }
+
+  public final LIAppErrorCode getErrorCode() {
+    return errorCode;
+  }
+
+  public final String getErrorMsg() {
+    return errorMsg;
+  }
+
   @Override
   public String toString() {
+    String str = null;
+
     try {
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("errorCode", errorCode.name());
       jsonObject.put("errorMessage", errorMsg);
-      return jsonObject.toString(2);
+      str = jsonObject.toString(2);
     } catch (JSONException exception) {
-      Log.d(TAG, exception.getMessage());
+      Log.d(getClass().getName(), exception.getMessage());
     }
-    return null;
+
+    return str;
   }
 }
