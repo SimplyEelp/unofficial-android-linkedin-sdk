@@ -25,8 +25,8 @@ public enum LIAppErrorCode {
 
   private final String description;
 
-  LIAppErrorCode(String name) {
-    this.description = name;
+  LIAppErrorCode(String description) {
+    this.description = description;
   }
 
   public String getDescription() {

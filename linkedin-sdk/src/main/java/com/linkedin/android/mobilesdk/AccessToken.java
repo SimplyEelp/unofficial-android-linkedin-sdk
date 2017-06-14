@@ -24,9 +24,9 @@ import java.io.Serializable;
 
 public class AccessToken implements Serializable {
 
+  private static final String TAG = AccessToken.class.getSimpleName();
   private static final String ACCESS_TOKEN_VALUE = "accessTokenValue";
   private static final String EXPIRES_ON = "expiresOn";
-  private static final String TAG = AccessToken.class.getSimpleName();
 
   private final String accessTokenValue;
   private final long expiresOn;
@@ -44,8 +44,8 @@ public class AccessToken implements Serializable {
     try {
       JSONObject jsonObject = new JSONObject(accessToken);
       return new AccessToken(jsonObject);
-    } catch (JSONException e) {
-      Log.d(TAG, e.getMessage());
+    } catch (JSONException exception) {
+      Log.d(TAG, exception.getMessage(), exception);
       return null;
     }
   }
@@ -56,8 +56,8 @@ public class AccessToken implements Serializable {
     }
     try {
       return new AccessToken(accessToken);
-    } catch (JSONException e) {
-      Log.d(TAG, e.getMessage());
+    } catch (JSONException exception) {
+      Log.d(TAG, exception.getMessage(), exception);
       return null;
     }
   }
@@ -98,7 +98,7 @@ public class AccessToken implements Serializable {
       json.put(EXPIRES_ON, expiresOn);
       return json.toString();
     } catch (JSONException exception) {
-      Log.e(AccessToken.class.getName(), exception.getMessage(), exception);
+      Log.e(TAG, exception.getMessage(), exception);
     }
     return null;
   }
